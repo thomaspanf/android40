@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.android40.data.DataSource;
 import com.example.android40.model.Album;
 import com.example.android40.model.User;
 
@@ -21,14 +21,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
     private static final String TAG = "MAIN ACTIVITY";
-
+    final Context context = this;
     private static final long serialVersionUID = 458967954625L;
     private RecyclerView recyclerView;
     private AlbumAdapter albumAdapter;
     private ArrayList<Album> albumList = new ArrayList<>();
     private ArrayList<Album> dataSetArrayList = new ArrayList<Album>();
     private User user;
-    public static DataSource  dataSource = new DataSource();
+    public static DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        dataSource = DataSource.loadFromDisk(this);
+        if(dataSource == null){
+            dataSource = new DataSource();
+        }
+        if(dataSource.albumList == null){
+            dataSource.albumList = new ArrayList<Album>();
+        }
 
 
 //        try {
@@ -49,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         recyclerView = findViewById(R.id.recycler_view);
         albumAdapter = new AlbumAdapter(this, dataSource.getAlbumList());
+
+
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
         new ItemTouchHelper(itemTouchHelperCallbackRight).attachToRecyclerView(recyclerView);
 
@@ -66,11 +76,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             if(!catcher){
                 dataSource.addAlbum(new Album(newAlbumTitle));
                 Log.d(TAG, "onCreate: " + dataSource.getAlbumList().size());
-                try {
-                    dataSource.save(dataSource.getAlbumList());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                dataSource.saveToDisk(this);
             }
 
         }
@@ -84,13 +90,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 //            e.printStackTrace();
 //        }
 
-        try {
-            dataSource.setAlbumList(dataSource.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            dataSource.setAlbumList(dataSource.load());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         recyclerView.setAdapter(albumAdapter);
 
@@ -108,11 +114,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             dataSource.getAlbumList().remove(viewHolder.getAdapterPosition());
-            try {
-                dataSource.save(dataSource.getAlbumList());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            dataSource.saveToDisk(MainActivity.this);
             albumAdapter.notifyDataSetChanged();
             // TODO:
 
