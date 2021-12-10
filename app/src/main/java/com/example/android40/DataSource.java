@@ -27,6 +27,7 @@ public class DataSource implements Serializable {
     private static final long serialVersionUID =  4L;
     public static final String directory = "data";
     public static final String storedFile = "userData.ser";
+    private Album currentAlbum;
 
     public ArrayList<Album> albumList;
 
@@ -43,7 +44,7 @@ public class DataSource implements Serializable {
 
     public DataSource(){
         this.albumList = new ArrayList<>();
-
+        currentAlbum = null;
     }
 
     public void addAlbum(Album a){
@@ -53,6 +54,14 @@ public class DataSource implements Serializable {
 
     public void createAlbumList(){
         this.albumList = new ArrayList<>();
+    }
+
+    public void setCurrentAlbum(Album a){
+        currentAlbum = a;
+    }
+
+    public Album getCurrentAlbum(){
+        return currentAlbum;
     }
 
     public boolean deleteAlbum(Album a){

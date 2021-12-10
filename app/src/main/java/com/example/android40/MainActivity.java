@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
     private static final String TAG = "MAIN ACTIVITY";
-    final Context context = this;
+    final Context context = MainActivity.this;
     private static final long serialVersionUID = 458967954625L;
     private RecyclerView recyclerView;
     private AlbumAdapter albumAdapter;
@@ -33,10 +34,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
-
         dataSource = DataSource.loadFromDisk(this);
         if(dataSource == null){
             dataSource = new DataSource();
@@ -45,15 +42,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             dataSource.albumList = new ArrayList<Album>();
         }
 
+        super.onCreate(savedInstanceState);
 
-//        try {
-//            DataSource.load();
-//            Log.d(TAG, "onCreate: Datasource load");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recycler_view);
         albumAdapter = new AlbumAdapter(this, dataSource.getAlbumList());
@@ -78,6 +69,15 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 Log.d(TAG, "onCreate: " + dataSource.getAlbumList().size());
                 dataSource.saveToDisk(this);
             }
+
+        }
+        if (intent.hasExtra(EditActivity.EDIT_ALBUM)) {
+            Album album = intent.getParcelableExtra(EditActivity.EDIT_ALBUM);
+            Log.d(TAG, "onCreate: " + album);
+            int position = Integer.parseInt(intent.getStringExtra(EditActivity.ALBUM_POSITION));
+            dataSource.getAlbumList().get(position).setName(album.getName());
+            dataSource.saveToDisk(context);
+            albumAdapter.notifyDataSetChanged();
 
         }
 //        Album newAlbum = intent.getParcelableExtra(AddActivity.ADD_ALBUM);
@@ -133,8 +133,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Log.d(TAG, "onSwiped: Swiping Right");
-
-            albumAdapter.notifyDataSetChanged();
+            Album temp = dataSource.getAlbumList().get(viewHolder.getAdapterPosition());
+            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            intent.putExtra(EditActivity.EDIT_ALBUM, (Parcelable) temp);
+            intent.putExtra(EditActivity.ALBUM_POSITION, "" + viewHolder.getAdapterPosition());
+            startActivity(intent);
             // TODO: When we swipe right, we go to EditActivity
             // or, we click on button and edit it through GalleryActivity
 

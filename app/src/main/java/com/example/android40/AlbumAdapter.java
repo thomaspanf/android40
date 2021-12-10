@@ -1,6 +1,7 @@
 package com.example.android40;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         return dataSet.size();
     }
 
-    public static class AlbumViewHolder extends RecyclerView.ViewHolder {
+    public class AlbumViewHolder extends RecyclerView.ViewHolder {
         private final Button button;
 
         public AlbumViewHolder(View view) {
@@ -58,6 +59,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             // Define click listener for the ViewHolder's View
 
             button = view.findViewById(R.id.album_title);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = view.getContext();
+                    Intent openPhotoViewer = new Intent(view.getContext(), PhotoViewActivity.class);
+                    openPhotoViewer.putExtra(PhotoViewActivity.POSITION, getAdapterPosition());
+                    context.startActivity(openPhotoViewer);
+                }
+            });
         }
 
         public Button getButtonView() {

@@ -6,26 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".EditActivity">
 
-    <EditText
-        android:id="@+id/edit_album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        android:hint="@string/edit_album_title"
-        />
-
 
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toEndOf="@id/edit_album"
-        android:text="@string/edit"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="1dp"
+        android:text="@string/edit"
+        app:layout_constraintStart_toEndOf="@id/edit_album"
         app:layout_constraintTop_toTopOf="@id/edit_album" />
+
+    <EditText
+        android:id="@+id/edit_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="84dp"
+        android:hint="@string/edit_album_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/current_album_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Current Album Name"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
