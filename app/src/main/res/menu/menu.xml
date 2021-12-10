@@ -6,4 +6,9 @@
         android:icon="@drawable/add"
         android:title="Add Album"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/search"
+        android:title="Search Photo"
+        app:showAsAction="always"/>
 </menu>

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.android40.model.Album;
 
@@ -34,6 +35,12 @@ public class AddActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(AddActivity.this, MainActivity.class);
                 intent.putExtra(ADD_ALBUM, newAlbumTitle);
+
+                if(editText.getText().toString().isEmpty()) {
+                    Toast.makeText(AddActivity.this, "Album name cannot be empty", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
 
                 Log.d(TAG, "Clicked add button");
                 startActivity(intent);

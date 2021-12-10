@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,11 +15,12 @@ import java.util.HashMap;
  * 
  *         This class is used to define the Album object
  */
-public class Album implements Serializable, Parcelable {
+public class Album implements Serializable {
 
 	private static final long serialVersionUID = -6624706288939535911L;
 
 	private String name;
+	//private HashMap<String, Photo> photos;
 	private ArrayList<Photo> photos;
 	/**
 	 * 
@@ -26,6 +28,8 @@ public class Album implements Serializable, Parcelable {
 	 */
 	public Album(String name) {
 		this.name = name;
+//		photos = new HashMap<String, Photo>();
+//		sortedPhotos = new ArrayList<>(photos.values());
 		photos = new ArrayList<Photo>();
 	}
 
@@ -33,17 +37,17 @@ public class Album implements Serializable, Parcelable {
 		name = in.readString();
 	}
 
-	public static final Creator<Album> CREATOR = new Creator<Album>() {
-		@Override
-		public Album createFromParcel(Parcel in) {
-			return new Album(in);
-		}
-
-		@Override
-		public Album[] newArray(int size) {
-			return new Album[size];
-		}
-	};
+//	public static final Creator<Album> CREATOR = new Creator<Album>() {
+//		@Override
+//		public Album createFromParcel(Parcel in) {
+//			return new Album(in);
+//		}
+//
+//		@Override
+//		public Album[] newArray(int size) {
+//			return new Album[size];
+//		}
+//	};
 
 	/**
 	 * setter method to set name
@@ -88,7 +92,7 @@ public class Album implements Serializable, Parcelable {
 
 	/**
 	 * 
-	 * @param name name of photo to be deleted
+	 * @param p name of photo to be deleted
 	 */
 	public void deletePhoto(Photo p) {
 	    photos.remove(p);
@@ -98,14 +102,14 @@ public class Album implements Serializable, Parcelable {
 	public String toString() {
 		return name + ", " + photos;
 	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(name);
-	}
+//
+//	@Override
+//	public int describeContents() {
+//		return 0;
+//	}
+//
+//	@Override
+//	public void writeToParcel(Parcel dest, int flags) {
+//		dest.writeString(name);
+//	}
 }

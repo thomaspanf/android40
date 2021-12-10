@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".MainActivity">
+    tools:context=".MainAct">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -14,7 +14,7 @@
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager" />
 
-<!--    <TextView-->
+    <!--    <TextView-->
 <!--        android:id="@+id/text_view"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->

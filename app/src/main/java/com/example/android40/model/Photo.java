@@ -1,5 +1,7 @@
 package com.example.android40.model;
 
+import android.graphics.Bitmap;
+
 import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -27,22 +29,22 @@ public class Photo implements Serializable {
 	private Calendar cal;
 	private Date date;
 	private File pic;
-	private HashMap<String, Tag> tagList;
+	private HashMap<String, Tag> tagHashMap;
 	private ArrayList<Tag> sortedTags;
 	private ArrayList<String> albums;
+	private Bitmap image;
+	//private int image;
 
 	/**
 	 * Photo object constructor
 	 * 
 	 * @param name      name of photo
-	 * @param user      user that photo is associated with
 	 * @param caption   photo caption
 	 * @param albumName name of album that photo is stored in
 	 * @param pic       file location of picture
 	 */
-	public Photo(String name, String user, String caption, String albumName, File pic) {
+	public Photo(String name, String caption, String albumName, File pic, Bitmap image) {
 		this.name = name;
-		this.user = user;
 		this.caption = caption;
 		albums = new ArrayList<String>();
 		albums.add(albumName);
@@ -50,7 +52,10 @@ public class Photo implements Serializable {
 		cal.set(Calendar.MILLISECOND, 0);
 		this.date = cal.getTime();
 		this.pic = pic;
-		this.tagList = new HashMap<String, Tag>();
+		this.tagHashMap = new HashMap<String, Tag>();
+		this.sortedTags = new ArrayList<Tag>();
+		this.image = image;
+
 	}
 
 	/**
@@ -176,26 +181,27 @@ public class Photo implements Serializable {
 	 * @param t name of tag
 	 */
 	public void addTag(Tag t) {
-		tagList.put(t.getDesc(), t);
+		sortedTags.add(t);
+		tagHashMap.put(t.getDesc(), t);
 	}
 
-	/**
-	 * function to remove tag from list of tags
-	 * 
-	 * @param value represents name of the tag
-	 */
-	public void removeTag(String value) {
-		if (tagList.containsKey(value))
-			tagList.remove(value);
-	}
+//	/**
+//	 * function to remove tag from list of tags
+//	 *
+//	 * @param value represents name of the tag
+//	 */
+//	public void removeTag(String value) {
+//		if (tagList.containsKey(value))
+//			tagList.remove(value);
+//	}
 
 	/**
 	 * function to get list of tags from hashmap
 	 * 
 	 * @return returns list of tags
 	 */
-	public HashMap<String, Tag> getTagList() {
-		return tagList;
+	public HashMap<String, Tag> getTagHashMap() {
+		return tagHashMap;
 	}
 
 	/**
@@ -203,9 +209,9 @@ public class Photo implements Serializable {
 	 * 
 	 * @param tagList name of tag list to be set
 	 */
-	public void setTagList(HashMap<String, Tag> tagList) {
-		this.tagList = tagList;
-	}
+//	public void setTagList(HashMap<String, Tag> tagList) {
+//		this.tagList = tagList;
+//	}
 
 	/**
 	 * getter for date string in MM/dd/yyy-HH:mm:ss format
@@ -233,6 +239,10 @@ public class Photo implements Serializable {
 		}
 	}
 
+	public Bitmap getImage() {
+		return image;
+	}
+
 	/**
 	 * setter for sorted tags
 	 * 
@@ -250,4 +260,5 @@ public class Photo implements Serializable {
 	public ArrayList<Tag> getSortedTags() {
 		return this.sortedTags;
 	}
+
 }

@@ -3,6 +3,7 @@ package com.example.android40;
 import android.content.Context;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import androidx.recyclerview.widget.AdapterListUpdateCallback;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -29,7 +30,7 @@ public class DataSource implements Serializable {
     public static final String storedFile = "userData.ser";
     private Album currentAlbum;
 
-    public ArrayList<Album> albumList;
+    public ArrayList<Album> albumList = new ArrayList<>();
 
     private static final String TAG = "DATASOURCE";
     public static ArrayList<Album> loadAlbums(){
@@ -42,10 +43,10 @@ public class DataSource implements Serializable {
         return albumList;
     }
 
-    public DataSource(){
-        this.albumList = new ArrayList<>();
-        currentAlbum = null;
-    }
+//    public DataSource(){
+//        this.albumList = new ArrayList<>();
+//        currentAlbum = null;
+//    }
 
     public void addAlbum(Album a){
         this.albumList.add(a);
@@ -84,45 +85,145 @@ public class DataSource implements Serializable {
         this.albumList = albumList;
     }
 
+//    public void save(ArrayList<Album> arrayList, Context context){
+//        ObjectOutputStream oos = null;
+//        FileOutputStream fos = null;
+//        try {
+//            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+//            fos.write(stringBuilder.toString().getBytes());
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(arrayList);
+//            objectOutputStream.close();
+//            FileOutputStream.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+//    public static ArrayList<Album> load(Context context) throws IOException, ClassNotFoundException {
+//        //DataSource ds = new DataSource();
+//        FileInputStream fis = null;
+//        ObjectInputStream  ois = null;
+//        try {
+//            fis = context.openFileInput(storedFile);
+//            ois = new ObjectInputStream(fis);
+//
+////
+////            if (ds.albumList == null) {
+////                ds.albumList = new ArrayList<Album>();
+////            }
+//
+//
+//        } catch (FileNotFoundException e) {
+//            return null;
+//        } catch (IOException e) {
+//            return null;
+//        } catch (Exception e) {
+//            return null;
+//        } finally {
+//            if(fis != null){
+//                try {
+//                    fis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if(ois != null){
+//                try {
+//                    ois.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return (ArrayList<Album>) ois.readObject();
+//    }
+
     public void saveToDisk(Context context){
-        ObjectOutputStream oos;
+        ObjectOutputStream oos = null;
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fileOutputStream = context.openFileOutput(storedFile, Context.MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            fileOutputStream.close();
+            fos = context.openFileOutput(storedFile, Context.MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(fos != null ){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(oos != null ){
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
 
-    public static DataSource loadFromDisk(Context context){
-        DataSource ds = new DataSource();
-        try {
-            FileInputStream fis = context.openFileInput(storedFile);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            ds = (DataSource) ois.readObject();
+    public static DataSource loadFromDisk(Context context) throws IOException, ClassNotFoundException {
+        DataSource dataSource;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        fis = context.openFileInput(storedFile);
+        ois = new ObjectInputStream(fis);
+        dataSource = (DataSource) ois.readObject();
 
-            if (ds.albumList == null) {
-                ds.albumList = new ArrayList<Album>();
-            }
-
-            fis.close();
-            ois.close();
-        } catch (FileNotFoundException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (Exception e) {
-            return null;
+        if (dataSource.albumList == null) {
+            dataSource.albumList = new ArrayList<Album>();
         }
-        return ds;
+
+        fis.close();
+        ois.close();
+//        try {
+//            fis = context.openFileInput(storedFile);
+//            ois = new ObjectInputStream(fis);
+//            dataSource = (DataSource) ois.readObject();
+//
+//            if (dataSource.albumList == null) {
+//                dataSource.albumList = new ArrayList<Album>();
+//            }
+//
+//            fis.close();
+//            ois.close();
+//        } catch (FileNotFoundException e) {
+//            return null;
+//        } catch (IOException e) {
+//            return null;
+//        } catch (ClassNotFoundException e) {
+//            return null;
+//        } catch (Exception e) {
+//            return null;
+//        } finally{
+//            if(fis != null ){
+//                try {
+//                    fis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if(ois != null ){
+//                try {
+//                    ois.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+
+        return dataSource;
     }
 
 

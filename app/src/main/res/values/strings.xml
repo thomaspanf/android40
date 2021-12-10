@@ -13,4 +13,5 @@
     <string name="add">Add</string>
     <string name="edit_album_title">Edit album title here</string>
     <string name="edit">Edit</string>
+    <string name="move">Move</string>
 </resources>

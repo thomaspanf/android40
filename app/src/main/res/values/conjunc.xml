@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="conjunc_array">
+        <item>OR</item>
+        <item>AND</item>
+    </string-array>
+</resources>

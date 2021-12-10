@@ -5,25 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import com.example.android40.model.Album;
 import com.example.android40.model.User;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,14 +26,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements Serializable {
+public class MainAct extends AppCompatActivity implements Serializable {
     private static final String TAG = "MAIN ACTIVITY";
     public static final String storedFile = "data.dat";
-    final Context context = MainActivity.this;
+    final Context context = MainAct.this;
     private static final long serialVersionUID = 458967954625L;
     private RecyclerView recyclerView;
     private AlbumAdapter albumAdapter;
-//    private ArrayAdapter<Album> albumList = new ArrayAdapter<>();
+    //    private ArrayAdapter<Album> albumList = new ArrayAdapter<>();
 //    private ArrayAdapter<Album> dataSetArrayList = new ArrayAdapter<>();
     ArrayAdapter<Album> arrayAdapter;
     private User user;
@@ -57,12 +49,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        dataSource.saveToDisk(context);
-//        if(dataSource == null){
-//            dataSource = new DataSource();
-//        }
-
-
+        if(dataSource == null){
+            dataSource = new DataSource();
+        }
+        if(dataSource.albumList == null){
+            dataSource.albumList = new ArrayList<Album>();
+        }
 
 //        try {
 //            load();
@@ -86,27 +78,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recycler_view);
-
-        albumAdapter = new AlbumAdapter(this, dataSource.albumList);
-        arrayAdapter = new ArrayAdapter<Album>(context, R.layout.album, dataSource.albumList);
-
-
-//        ListView listView = findViewById(R.id.list_view);
-////        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-////        listView.setSelection(0);
-//        listView.setAdapter(arrayAdapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Context context = view.getContext();
-//                Intent openPhotoViewer = new Intent(MainActivity.this, PhotoViewActivity.class);
-//                openPhotoViewer.putExtra("index", position);
-//                context.startActivity(openPhotoViewer);
-//            }
-//
-//        });
-
+        albumAdapter = new AlbumAdapter(this, dataSource.getAlbumList());
+        arrayAdapter = new ArrayAdapter<Album>(context, R.layout.list_item, dataSource.albumList);
 
 
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
@@ -195,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Log.d(TAG, "onSwiped: Swiping Right");
             Album temp = dataSource.getAlbumList().get(viewHolder.getAdapterPosition());
-            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            Intent intent = new Intent(MainAct.this, EditActivity.class);
             intent.putExtra(EditActivity.EDIT_ALBUM, (Parcelable) temp);
             intent.putExtra(EditActivity.ALBUM_POSITION, "" + viewHolder.getAdapterPosition());
             startActivity(intent);
@@ -216,11 +189,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         if (item.getItemId() == R.id.action_add) {
             Log.d(TAG, "onOptionsItemSelected: clicked on Plus");
             Intent intent = new Intent(this, AddActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        if(item.getItemId() == R.id.action_search){
-            Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
             return true;
         }
