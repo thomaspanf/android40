@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Log.d(TAG, "onSwiped: Swiping Right");
+
             albumAdapter.notifyDataSetChanged();
             // TODO: When we swipe right, we go to EditActivity
             // or, we click on button and edit it through GalleryActivity
