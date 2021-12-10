@@ -1,6 +1,7 @@
 package com.example.android40.model;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.File;
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public class Photo implements Serializable {
 	private HashMap<String, Tag> tagHashMap;
 	private ArrayList<Tag> sortedTags;
 	private ArrayList<String> albums;
-	private Bitmap image;
+	transient Bitmap image;
 	//private int image;
 
 	/**
@@ -43,7 +44,7 @@ public class Photo implements Serializable {
 	 * @param albumName name of album that photo is stored in
 	 * @param pic       file location of picture
 	 */
-	public Photo(String name, String caption, String albumName, File pic, Bitmap image) {
+	public Photo(String name, String caption, String albumName, File pic) {
 		this.name = name;
 		this.caption = caption;
 		albums = new ArrayList<String>();
@@ -54,8 +55,7 @@ public class Photo implements Serializable {
 		this.pic = pic;
 		this.tagHashMap = new HashMap<String, Tag>();
 		this.sortedTags = new ArrayList<Tag>();
-		this.image = image;
-
+		this.image = null;
 	}
 
 	/**
@@ -75,6 +75,7 @@ public class Photo implements Serializable {
 	public String getName() {
 		return this.name;
 	}
+
 
 	/**
 	 * setter for user associated with photo
@@ -241,6 +242,10 @@ public class Photo implements Serializable {
 
 	public Bitmap getImage() {
 		return image;
+	}
+
+	public void setImage(Bitmap image){
+		this.image = image;
 	}
 
 	/**

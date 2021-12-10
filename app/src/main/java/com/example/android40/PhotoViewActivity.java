@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -71,10 +73,14 @@ public class PhotoViewActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(intent, SELECT_PHOTO);
-                MainActivity.dataSource.saveToDisk(context);
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, SELECT_PHOTO);
+//                MainActivity.dataSource.saveToDisk(context);
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 0);
+
             }
         });
 
@@ -153,14 +159,15 @@ public class PhotoViewActivity extends AppCompatActivity {
             String pathID = f.getAbsolutePath();
             String filename = pathToFileName(selectedImage);
 
-            Photo photoToAdd = new Photo(filename, filename, MainActivity.dataSource.albumList.get(position).getName(), f, selectedImageGal);
+            Photo photoToAdd = new Photo(pathID, filename, MainActivity.dataSource.albumList.get(position).getName(), f);
 
+            photoToAdd.setImage(selectedImageGal);
 
             MainActivity.dataSource.albumList.get(position).addPhoto(photoToAdd);
             MainActivity.dataSource.saveToDisk(context);
 
-
-            pa.notifyDataSetChanged();
+            recyclerView.setAdapter(pa);
+            //pa.notifyDataSetChanged();
 
 //            gridView.setAdapter(adapter);
 //            TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
@@ -219,6 +226,29 @@ public class PhotoViewActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+            cursor.close();
+            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
     }
 
 }

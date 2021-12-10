@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        dataSource.saveToDisk(context);
+        //dataSource.saveToDisk(context);
 //        if(dataSource == null){
 //            dataSource = new DataSource();
 //        }

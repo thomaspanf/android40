@@ -181,12 +181,16 @@ public class DataSource implements Serializable {
         ois = new ObjectInputStream(fis);
         dataSource = (DataSource) ois.readObject();
 
+
+
         if (dataSource.albumList == null) {
             dataSource.albumList = new ArrayList<Album>();
         }
 
         fis.close();
         ois.close();
+
+        return dataSource;
 //        try {
 //            fis = context.openFileInput(storedFile);
 //            ois = new ObjectInputStream(fis);
@@ -223,7 +227,7 @@ public class DataSource implements Serializable {
 //            }
 //        }
 
-        return dataSource;
+
     }
 
 

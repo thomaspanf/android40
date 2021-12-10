@@ -1,7 +1,15 @@
 package com.example.android40;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android40.model.Album;
 import com.example.android40.model.Photo;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
@@ -23,10 +33,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     ArrayList<Photo> photoList;
     Context context;
 
+
     public PhotoAdapter(Context ct, Album a){
         context = ct;
         album = a;
         photoList = a.getPhotoList();
+
     }
 
     @NonNull
@@ -42,12 +54,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         holder.caption.setText(photoList.get(position).getCaption());
         holder.date.setText(photoList.get(position).getDateString());
         holder.tags.setText("");
-//        if(photoList.get(position).getSortedTags().size()>0){
-//            holder.tags.setText(photoList.get(position).getSortedTags().get(0).getDesc());
-//        }
-//        else{
-//
-//        }
+
         holder.myImage.setImageBitmap(photoList.get(position).getImage());
 
 
@@ -70,6 +77,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
             myImage = itemView.findViewById(R.id.imageView);
             date = itemView.findViewById(R.id.date_text);
 
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -82,5 +90,28 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
 
 
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+            cursor.close();
+            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
     }
 }
