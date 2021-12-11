@@ -155,9 +155,6 @@ public class PhotoViewActivity extends AppCompatActivity {
             BitmapDrawable drawable = (BitmapDrawable) iv.getDrawable();
             Bitmap selectedImageGal = drawable.getBitmap();
 
-            //Photo photoToAdd = new Photo();
-            //photoToAdd.setImage(selectedImageGal);
-
             File f = new File(selectedImage.getPath());
             String pathID = f.getAbsolutePath();
             String filename = pathToFileName(selectedImage);
@@ -174,11 +171,6 @@ public class PhotoViewActivity extends AppCompatActivity {
             MainActivity.dataSource.saveToDisk(context);
 
             recyclerView.setAdapter(pa);
-            //pa.notifyDataSetChanged();
-
-//            gridView.setAdapter(adapter);
-//            TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
-//            toolbarTitle.setText("Album: "+currentAlbum.getName()+" - "+currentAlbum.getNumOfPhotos()+" photo(s)");
 
         }
     }
@@ -256,27 +248,5 @@ public class PhotoViewActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static Uri getImageContentUri(Context context, File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID },
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[] { filePath }, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
-            cursor.close();
-            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
-            }
-        }
-    }
 
 }
