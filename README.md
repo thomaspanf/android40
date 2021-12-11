@@ -1,29 +1,22 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Android 10 api level 29
+If linting doesn't load in correctly in Android Studio, in top toolbar: File > Invalidate Caches / Restart... 
 
-### What is this repository for? ###
+### Home screen Add/Delete and Edit album instructions: ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- to add album, click the '+' icon in the toolbar to prompt adding of album. Enter album name into text field and click 'add'. Empty or duplicate album names are not accepted.
+- to delete an album, click and drag to the left to delete and album
+- to edit an album, click and drag to the right to enter edit page. Enter album name into text field and click 'edit'. Empty or duplicate album names are not accepted.
 
-### How do I get set up? ###
+### Tag Search instructions: ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+- on the home page, click the image icon with the magnifying glass to enter search page. Use dropdown menus to select tag type as well as AND/OR search. 
+- To search for one tag, leave the second text field empty then select AND. Click search after desired inputs are in place. 
 
-### Contribution guidelines ###
+### Photo Gallery instructions: ###
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+- click on album name to open album. This view will display photos in album. In this view, pressing the '+' icon in the toolbar will open the image directory on the android emulator
+- clicking on an image in the image directory will add it to the current album. 
+- clicking on a photo in the gallery view will open the slideshow view. 
+- changing photo name, adding tags, and moving to another album can be done in the slideshow view. 
