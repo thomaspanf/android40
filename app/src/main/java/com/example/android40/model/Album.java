@@ -15,7 +15,7 @@ import java.util.HashMap;
  * 
  *         This class is used to define the Album object
  */
-public class Album implements Serializable {
+public class Album implements Serializable{
 
 	private static final long serialVersionUID = -6624706288939535911L;
 
@@ -102,6 +102,7 @@ public class Album implements Serializable {
 	public String toString() {
 		return name + ", " + photos;
 	}
+
 //
 //	@Override
 //	public int describeContents() {

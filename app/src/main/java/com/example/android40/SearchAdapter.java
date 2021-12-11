@@ -2,27 +2,37 @@ package com.example.android40;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android40.model.Album;
 import com.example.android40.model.Photo;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> {
 
     private ArrayList<Photo> searchedPhotos;
     private Context context;
+    private String searchedAlbumName;
 
-    public SearchAdapter(Context context, ArrayList<Photo> sp){
+    public SearchAdapter(Context context, ArrayList<Photo> sp, String searchedAlbum){
         this.context = context;
         this.searchedPhotos = sp;
+        this.searchedAlbumName = searchedAlbum;
     }
 
     @NonNull
@@ -44,7 +54,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 //        else{
 //
 //        }
-        holder.myImage.setImageBitmap(searchedPhotos.get(position).getImage());
+        //holder.myImage.setImageURI(Uri.fromFile(new File(searchedPhotos.get(position).getName())));
+        Bitmap image = BitmapFactory.decodeByteArray(searchedPhotos.get(position).imageByteArray, 0, searchedPhotos.get(position).imageByteArray.length);
+        holder.myImage.setImageBitmap(image);
 
 
     }
@@ -70,13 +82,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
-                    intent.putExtra(PhotoViewActivity.POSITION, getAdapterPosition() );
+                    intent.putExtra(PhotoViewActivity.POSITION, getAdapterPosition());
+                    intent.putExtra("Searched Album", searchedAlbumName);
+                    intent.putExtra(SearchActivity.SEARCHED_ALBUM_POSITION, getAdapterPosition());
                     context.startActivity(intent);
-                    return;
                 }
             });
         }
 
 
     }
+
+    public void clear() {
+        int size = searchedPhotos.size();
+        searchedPhotos.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
 }

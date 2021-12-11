@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android40.model.Album;
 import com.example.android40.model.User;
@@ -130,15 +131,21 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             }
 
         }
-        if (intent.hasExtra(EditActivity.EDIT_ALBUM)) {
-            Album album = intent.getParcelableExtra(EditActivity.EDIT_ALBUM);
-            Log.d(TAG, "onCreate: " + album);
+        if (intent.hasExtra(EditActivity.EDIT_ALBUM) && intent.hasExtra(EditActivity.ALBUM_POSITION)
+                && !intent.getStringExtra(EditActivity.NEW_NAME).isEmpty()) {
+            //Album album = intent.getParcelableExtra(EditActivity.EDIT_ALBUM);
+            //Log.d(TAG, "onCreate: " + album);
             int position = Integer.parseInt(intent.getStringExtra(EditActivity.ALBUM_POSITION));
-            dataSource.getAlbumList().get(position).setName(album.getName());
-            dataSource.saveToDisk(context);
+            dataSource.getAlbumList().get(position).setName(intent.getStringExtra(EditActivity.NEW_NAME));
+            //dataSource.saveToDisk(context);
             albumAdapter.notifyDataSetChanged();
 
         }
+
+//        if (intent.getStringExtra(EditActivity.NEW_NAME).isEmpty()) {
+//            albumAdapter.notifyDataSetChanged();
+//        }
+
 //        Album newAlbum = intent.getParcelableExtra(AddActivity.ADD_ALBUM);
 
 
@@ -158,10 +165,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 //        }
 
         recyclerView.setAdapter(albumAdapter);
+        albumAdapter.notifyDataSetChanged();
 
 
 
     }
+
+
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallbackLeft = new ItemTouchHelper.SimpleCallback(
             0,
@@ -222,6 +232,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         if(item.getItemId() == R.id.action_search){
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_refresh){
+            albumAdapter.notifyDataSetChanged();
+            return true;
+        }
+        if(item.getItemId() == R.id.action_home){
+            Toast.makeText(context, "Already home", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

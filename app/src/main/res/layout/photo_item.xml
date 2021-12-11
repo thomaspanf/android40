@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_insetEdge="top"
+    android:layout_marginBottom="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dsd"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#00BCD4">
 
         <TextView
             android:id="@+id/caption_text"
@@ -25,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
             android:inputType="date|time"
             android:text="date"
             app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -38,17 +42,22 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:text="tags"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/date_text" />
+            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="117dp"
             android:layout_height="111dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
+            android:cropToPadding="true"
+            android:paddingVertical="5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+
+</FrameLayout>

@@ -1,8 +1,10 @@
 package com.example.android40.model;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -34,6 +36,7 @@ public class Photo implements Serializable {
 	private ArrayList<Tag> sortedTags;
 	private ArrayList<String> albums;
 	transient Bitmap image;
+	public byte[] imageByteArray;
 	//private int image;
 
 	/**
@@ -44,7 +47,7 @@ public class Photo implements Serializable {
 	 * @param albumName name of album that photo is stored in
 	 * @param pic       file location of picture
 	 */
-	public Photo(String name, String caption, String albumName, File pic) {
+	public Photo(String name, String caption, String albumName, File pic, byte[] bytes) {
 		this.name = name;
 		this.caption = caption;
 		albums = new ArrayList<String>();
@@ -56,6 +59,7 @@ public class Photo implements Serializable {
 		this.tagHashMap = new HashMap<String, Tag>();
 		this.sortedTags = new ArrayList<Tag>();
 		this.image = null;
+		imageByteArray = bytes;
 	}
 
 	/**
@@ -245,6 +249,14 @@ public class Photo implements Serializable {
 	}
 
 	public void setImage(Bitmap image){
+		if(imageByteArray == null) {
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			imageByteArray = stream.toByteArray();
+		}
+
+		image = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+
 		this.image = image;
 	}
 

@@ -2,6 +2,7 @@ package com.example.android40;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,15 +14,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.example.android40.model.Album;
 import com.example.android40.model.Photo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class PhotoViewActivity extends AppCompatActivity {
@@ -56,19 +57,20 @@ public class PhotoViewActivity extends AppCompatActivity {
             position = intent.getIntExtra(POSITION, 0);
         }
 
-        currentAlbum = MainActivity.dataSource.albumList.get(position);
-
         albumName = findViewById(R.id.album_title);
 
-        addButton = findViewById(R.id.add_button);
+        currentAlbum = null;
+        if(MainActivity.dataSource.albumList.size() != 0){
+            currentAlbum = MainActivity.dataSource.albumList.get(position);
+            albumName.setText(MainActivity.dataSource.albumList.get(position).getName());
+            pa = new PhotoAdapter(context, MainActivity.dataSource.albumList.get(position));
+            pa.notifyDataSetChanged();
+        }
 
-        albumName.setText(MainActivity.dataSource.albumList.get(position).getName());
+        addButton = findViewById(R.id.add_button);
+        addButton.setVisibility(View.INVISIBLE);
 
         recyclerView = findViewById(R.id.recycler_view_photo);
-
-        pa = new PhotoAdapter(context, MainActivity.dataSource.albumList.get(position));
-
-
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,13 +87,14 @@ public class PhotoViewActivity extends AppCompatActivity {
         });
 
         recyclerView.setAdapter(pa);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
 
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
         new ItemTouchHelper(itemTouchHelperCallbackRight).attachToRecyclerView(recyclerView);
 
-        pa.notifyDataSetChanged();
+        //pa.notifyDataSetChanged();
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallbackLeft = new ItemTouchHelper.SimpleCallback(
@@ -159,8 +162,12 @@ public class PhotoViewActivity extends AppCompatActivity {
             String pathID = f.getAbsolutePath();
             String filename = pathToFileName(selectedImage);
 
-            Photo photoToAdd = new Photo(pathID, filename, MainActivity.dataSource.albumList.get(position).getName(), f);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            selectedImageGal.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
+            Photo photoToAdd = new Photo(pathID, filename, MainActivity.dataSource.albumList.get(position).getName(), f, stream.toByteArray());
+
+            Bitmap image = BitmapFactory.decodeByteArray(photoToAdd.imageByteArray, 0, photoToAdd.imageByteArray.length);
             photoToAdd.setImage(selectedImageGal);
 
             MainActivity.dataSource.albumList.get(position).addPhoto(photoToAdd);
@@ -178,6 +185,10 @@ public class PhotoViewActivity extends AppCompatActivity {
 
     public static Album getCurrentAlbum(){
         return currentAlbum;
+    }
+
+    public static void setCurrentAlbum(Album a){
+        currentAlbum = a;
     }
 
     private String pathToFileName(Uri selectedImage){
@@ -215,13 +226,30 @@ public class PhotoViewActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-            Log.d(TAG, "onOptionsItemSelected: clicked on Plus");
-            Intent intent = new Intent(this, AddActivity.class);
-            startActivity(intent);
+//            Log.d(TAG, "onOptionsItemSelected: clicked on Plus");
+//            Intent intent = new Intent(this, AddActivity.class);
+//            startActivity(intent);
+//            MainActivity.dataSource.saveToDisk(PhotoViewActivity.this);
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 0);
             return true;
         }
         if(item.getItemId() == R.id.action_search){
             Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+            MainActivity.dataSource.saveToDisk(PhotoViewActivity.this);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_refresh){
+//            Intent intent = new Intent(this, PhotoViewActivity.class);
+//            startActivity(intent);
+            pa.notifyDataSetChanged();
+            MainActivity.dataSource.saveToDisk(PhotoViewActivity.this);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_home){
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
         }

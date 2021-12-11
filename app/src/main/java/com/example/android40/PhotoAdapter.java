@@ -55,7 +55,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         holder.date.setText(photoList.get(position).getDateString());
         holder.tags.setText("");
 
-        holder.myImage.setImageBitmap(photoList.get(position).getImage());
+
+
+        holder.myImage.setImageURI(Uri.fromFile(new File(photoList.get(position).getName())));
+        Bitmap image = BitmapFactory.decodeByteArray(photoList.get(position).imageByteArray, 0, photoList.get(position).imageByteArray.length);
+        holder.myImage.setImageBitmap(image);
+        //BitmapDrawable drawable = (BitmapDrawable) holder.myImage.getDrawable();
+
+        //Bitmap selectedImageGal = drawable.getBitmap();
+
+        //holder.myImage.setImageBitmap(photoList.get(position).getImage());
+
 
 
     }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class EditActivity extends AppCompatActivity implements Serializable {
 
     public static final String ALBUM_POSITION = "com.example.android40.ALBUM_POSITION";
+    public static final String NEW_NAME = "com.example.android40.NEW_NAME";
     private static final long serialVersionUID = 498476467424L;
     private static final String TAG = "EditActivity";
     public static final String EDIT_ALBUM = "com.example.android40.EDIT_ALBUM";
@@ -76,16 +77,27 @@ public class EditActivity extends AppCompatActivity implements Serializable {
                         return;
                     }
                 }
-                currentAlbum.setName(editText.getText().toString());
-                currentAlbumText.setText(currentAlbum.getName());
-                MainActivity.dataSource.saveToDisk(context);
+//                currentAlbum.setName(editText.getText().toString());
+//                currentAlbumText.setText(currentAlbum.getName());
+
                 Intent goBack = new Intent(EditActivity.this, MainActivity.class);
+                goBack.putExtra(NEW_NAME, editText.getText().toString());
                 goBack.putExtra(ALBUM_POSITION, position);
                 goBack.putExtra(EDIT_ALBUM, (Parcelable) currentAlbum);
+                MainActivity.dataSource.saveToDisk(context);
                 startActivity(goBack);
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(EditActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(EditActivity.this, MainActivity.class);
+        intent.putExtra(NEW_NAME, "");
+        startActivity(intent);
+        //super.onBackPressed();
     }
 
 

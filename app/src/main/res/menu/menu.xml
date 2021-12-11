@@ -2,13 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/home_foreground"
+        android:title="Return Home"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_add"
         android:icon="@drawable/add"
         android:title="Add Album"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/refresh_fg"
+        android:title="Refresh Album"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/search"
         android:title="Search Photo"
         app:showAsAction="always"/>
+
 </menu>

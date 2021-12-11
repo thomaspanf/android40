@@ -48,4 +48,14 @@ public class AddActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(AddActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(AddActivity.this, MainActivity.class);
+        startActivity(intent);
+        //super.onBackPressed();
+    }
+
 }

@@ -25,10 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DataSource implements Serializable {
-    private static final long serialVersionUID =  4L;
+    private static final long serialVersionUID = 111696345129311948L;
     public static final String directory = "data";
     public static final String storedFile = "userData.ser";
     private Album currentAlbum;
+    public byte[] imageByteArray;
 
     public ArrayList<Album> albumList = new ArrayList<>();
 
@@ -149,6 +150,9 @@ public class DataSource implements Serializable {
             fos = context.openFileOutput(storedFile, Context.MODE_PRIVATE);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(this);
+
+
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

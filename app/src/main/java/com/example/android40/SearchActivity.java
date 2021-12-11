@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,11 +33,16 @@ public class SearchActivity extends AppCompatActivity {
     private EditText descriptionField2;
     private Spinner conjuncSpinner;
     private SearchAdapter sa;
+    private Button clearButton;
+    public Album searchedAlbum;
+    public final static String SEARCHED_ALBUM = "com.example.android40.SEARCHED_ALBUM";
+    public final static String SEARCHED_ALBUM_POSITION = "com.example.android40.SEARCHED_ALBUM_POSITION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        searchedAlbum = new Album("Searched Album");
 
         searchedPhotoList = new ArrayList<>();
         allPhotoList = new ArrayList<>();
@@ -45,6 +51,8 @@ public class SearchActivity extends AppCompatActivity {
                 allPhotoList.add(p);
             }
         }
+
+        clearButton = findViewById(R.id.clear_button);
 
         searchButton = findViewById(R.id.search_button);
 
@@ -73,7 +81,7 @@ public class SearchActivity extends AppCompatActivity {
 
         searchedImage = findViewById(R.id.recyclerViewSearch);
         searchedImage.setLayoutManager(new LinearLayoutManager(this));
-        sa = new SearchAdapter(this, searchedPhotoList);
+        sa = new SearchAdapter(this, searchedPhotoList, "Searched Album");
         searchedImage.setAdapter(sa);
         searchedImage.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         sa.notifyDataSetChanged();
@@ -82,6 +90,10 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                sa.clear();
+
+                searchedAlbum.setPhotoList(new ArrayList<Photo>());
+
                 if (searchedPhotoList != null || !searchedPhotoList.isEmpty()) {
                     searchedPhotoList = new ArrayList<>();
                 }
@@ -89,12 +101,24 @@ public class SearchActivity extends AppCompatActivity {
                 String[] arrOfStr;
                 String type;
                 String desc;
+                String[] tag1;
+                String[] tag2;
+//                String[] tag1 = descriptionField.getText().toString().isEmpty() ?
+//                        new String[] { "", "" } : new String[] { spinner.getSelectedItem().toString(), descriptionField.getText().toString()};
+//                String[] tag2 = descriptionField2.getText().toString().isEmpty() ?
+//                        new String[] { "", "" } : new String[] { spinner2.getSelectedItem().toString(), descriptionField2.getText().toString()};
 
+                if(descriptionField.getText().toString().isEmpty()){
+                    tag1 = new String[] { "", "" };
+                } else {
+                    tag1 = new String[] {spinner.getSelectedItem().toString(), descriptionField.getText().toString()};
+                }
 
-                String[] tag1 = descriptionField.getText().toString().isEmpty() ?
-                        new String[] { "", "" } : new String[] { spinner.getSelectedItem().toString(), descriptionField.getText().toString()};
-                String[] tag2 = descriptionField2.getText().toString().isEmpty() ?
-                        new String[] { "", "" } : new String[] { spinner2.getSelectedItem().toString(), descriptionField2.getText().toString()};
+                if(descriptionField2.getText().toString().isEmpty()){
+                    tag2 = new String[] { "", "" };
+                } else {
+                    tag2 = new String[] {spinner2.getSelectedItem().toString(), descriptionField2.getText().toString()};
+                }
 
                 String[] typeArr = new String[] { tag1[0], tag2[0] };
                 String[] descArr = new String[] { tag1[1], tag2[1] };
@@ -103,11 +127,12 @@ public class SearchActivity extends AppCompatActivity {
                 if (conjuncSpinner.getSelectedItem().toString().equals("AND")) {
                     matchNeeded = 2;
                 }
+                //Toast.makeText(SearchActivity.this, ""+matchNeeded, Toast.LENGTH_SHORT).show();
 
                 for(int i = 0; i < allPhotoList.size(); i ++){
                     int numMatch = 0;
                     for (int j = 0; j < typeArr.length; j++){
-                        if (typeArr[i].isEmpty()) {
+                        if (typeArr[j].isEmpty()) {
                             numMatch++;
                             continue;
                         }
@@ -116,7 +141,7 @@ public class SearchActivity extends AppCompatActivity {
                             if(res == -1){
                                 continue;
                             }
-                            boolean containsType = allPhotoList.get(i).getSortedTags().get(k).getType().equals(typeArr[i]);
+                            boolean containsType = allPhotoList.get(i).getSortedTags().get(k).getType().equals(typeArr[j]);
                             if(res != -1 && containsType){
                                 numMatch++;
                             }
@@ -124,69 +149,47 @@ public class SearchActivity extends AppCompatActivity {
                     }
                     if (numMatch >= matchNeeded) {
                         searchedPhotoList.add(allPhotoList.get(i));
-
-                        //addPhotoToList(p);
+                        searchedAlbum.addPhoto(allPhotoList.get(i));
                     }
                 }
-//                for (Photo p : allPhotoList) {
-//                    int numMatch = 0;
-//                    for (int i = 0; i < typeArr.length; i++) {
-//                        // If its blank consider it to be a match always
-//                        if (typeArr[i].isEmpty()) {
-//                            numMatch++;
-//                            continue;
-//                        }
-////                        int res = isSubstring(descArr[i], p.getTagHashMap().)
-//                        // If not blank, check the photos
-//                        boolean containsDescription = p.getTagHashMap().containsKey(descArr[i]);
-//                        if (!containsDescription) {
-//                            continue;
-//                        }
-//                        boolean containsType = p.getTagHashMap().get(descArr[i]).getDesc().equals(typeArr[i]);
-//                        if (containsDescription && containsType) {
-//                            numMatch++;
-//                        }
-//                    }
-//                    if (numMatch >= matchNeeded) {
-//                        searchedPhotoList.add(p);
-//
-//                        //addPhotoToList(p);
-//                    }
-//                }
 
+                MainActivity.dataSource.addAlbum(searchedAlbum);
 
                 if(searchedPhotoList.size() == 0){
                     Toast.makeText(SearchActivity.this, "No matches found", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(SearchActivity.this, "Found matches", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 searchedImage = findViewById(R.id.recyclerViewSearch);
                 searchedImage.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
-                sa = new SearchAdapter(SearchActivity.this, searchedPhotoList);
+                sa = new SearchAdapter(SearchActivity.this, searchedPhotoList, "Searched Album");
                 searchedImage.setAdapter(sa);
                 searchedImage.addItemDecoration(new DividerItemDecoration(SearchActivity.this, LinearLayoutManager.VERTICAL));
+                //MainActivity.dataSource.saveToDisk(SearchActivity.this);
+                //Toast.makeText(SearchActivity.this, searchedAlbum.getName()+ " " +searchedAlbum.getPhotoList().size(), Toast.LENGTH_LONG).show();
                 sa.notifyDataSetChanged();
+            }
+        });
 
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sa.clear();
             }
         });
 
 
     }
 
-    static int isSubstring(
-            String s1, String s2)
+    static int isSubstring(String s1, String s2)
     {
         int M = s1.length();
         int N = s2.length();
 
-        /* A loop to slide pat[] one by one */
         for (int i = 0; i <= N - M; i++) {
             int j;
 
-            /* For current index i, check for
-            pattern match */
             for (j = 0; j < M; j++)
-                if (s2.charAt(i + j)
+                if (s2.charAt(j)
                         != s1.charAt(j))
                     break;
 
@@ -196,4 +199,11 @@ public class SearchActivity extends AppCompatActivity {
 
         return -1;
     }
+
+    @Override
+    public void onBackPressed() {
+        //.makeText(SearchActivity.this, "Back was pressed", Toast.LENGTH_SHORT).show();
+        super.onBackPressed();
+    }
+
 }

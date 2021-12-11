@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,12 +31,14 @@ import com.example.android40.model.Album;
 import com.example.android40.model.Photo;
 import com.example.android40.model.Tag;
 
+import java.io.File;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SlideShowActivity extends AppCompatActivity {
+public class SlideShowActivity extends AppCompatActivity implements Serializable {
 
     private static final String POSITION = "";
     private ImageView imageView;
@@ -59,13 +64,24 @@ public class SlideShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slide_show);
-
+        Log.d("SLIDESHOW", "onCreate: running");
         Intent intent = getIntent();
         if (intent.hasExtra(POSITION)){
             position = intent.getIntExtra(POSITION, 0);
         }
-
         currentAlbum = PhotoViewActivity.getCurrentAlbum();
+        if(intent.hasExtra("Searched Album")){
+            for(Album a : MainActivity.dataSource.getAlbumList()) {
+                if(a.getName().equals("Searched Album")){
+                    currentAlbum = a;
+                }
+            }
+            PhotoViewActivity.setCurrentAlbum(currentAlbum);
+            position = intent.getIntExtra(SearchActivity.SEARCHED_ALBUM_POSITION, 0);
+            //Log.d("SLIDESHOW", "onCreate: " + currentAlbum.getName());
+        }
+
+        //Log.d("SLIDESHOW", "onCreate: " + currentAlbum.getName());
 
         imageView = findViewById(R.id.imageView2);
         leftButton = findViewById(R.id.left_button);
@@ -89,6 +105,8 @@ public class SlideShowActivity extends AppCompatActivity {
         moveButton = findViewById(R.id.move_button);
 //        copyButton = findViewById(R.id.copy_button);
 
+
+
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,28 +117,15 @@ public class SlideShowActivity extends AppCompatActivity {
 
                     currentAlbum.getPhotoList().remove(position);
                     //position = 0;
-                    if(currentAlbum.getPhotoList().isEmpty()){
-                        Intent intent = new Intent(SlideShowActivity.this, MainActivity.class);
-                        context.startActivity(intent);
-                    }
+
+                    Intent intent = new Intent(SlideShowActivity.this, MainActivity.class);
+                    context.startActivity(intent);
+                    MainActivity.dataSource.saveToDisk(context);
+
                     ta.notifyDataSetChanged();
                 }
             }
         });
-
-//        copyButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String albumName = albumSpinner.getSelectedItem().toString();
-//                if(stringAlbumList.containsKey(albumName)){
-//                    Album album = stringAlbumList.get(albumName);
-//                    Photo movedPhoto = currentAlbum.getPhotoList().get(position);
-//
-//                    album.addPhoto(movedPhoto);
-//                }
-//            }
-//        });
-
 
         tagConfirmButton = findViewById(R.id.tag_confirm_button);
         tagDescription = findViewById(R.id.add_tag_tf);
@@ -157,6 +162,7 @@ public class SlideShowActivity extends AppCompatActivity {
 
                 Tag newTag = new Tag(spinner.getSelectedItem().toString(), tagDescription.getText().toString().toLowerCase());
                 currentAlbum.getPhotoList().get(position).addTag(newTag);
+                MainActivity.dataSource.saveToDisk(SlideShowActivity.this);
                 ta.notifyDataSetChanged();
                 //tagListView.notify();
             }
@@ -164,18 +170,11 @@ public class SlideShowActivity extends AppCompatActivity {
 
         new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(tagList);
 
-        //spinner.getOnItemSelectedListener();
-
-        // Specify the layout to use when the list of choices appears
-
-        // Apply the adapter to the spinner
-
-
-
-
         caption.setText(currentAlbum.getPhotoList().get(position).getCaption());
         editText.setText(currentAlbum.getPhotoList().get(position).getCaption());
-        imageView.setImageBitmap(PhotoViewActivity.getCurrentAlbum().getPhotoList().get(position).getImage());
+        //imageView.setImageURI(Uri.fromFile(new File(currentAlbum.getPhotoList().get(position).getName())));
+        Bitmap image = BitmapFactory.decodeByteArray(currentAlbum.getPhotoList().get(position).imageByteArray, 0, currentAlbum.getPhotoList().get(position).imageByteArray.length);
+        imageView.setImageBitmap(image);
 
         change.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +187,7 @@ public class SlideShowActivity extends AppCompatActivity {
                 currentAlbum.getPhotoList().get(position).setCaption(newCaption);
                 caption.setText(currentAlbum.getPhotoList().get(position).getCaption());
                 editText.setText(currentAlbum.getPhotoList().get(position).getCaption());
+                MainActivity.dataSource.saveToDisk(SlideShowActivity.this);
             }
         });
 
@@ -199,7 +199,9 @@ public class SlideShowActivity extends AppCompatActivity {
                 } else {
                     position = currentAlbum.getPhotoList().size()-1;
                 }
-                imageView.setImageBitmap(currentAlbum.getPhotoList().get(position).getImage());
+                imageView.setImageURI(Uri.fromFile(new File(currentAlbum.getPhotoList().get(position).getName())));
+                Bitmap image = BitmapFactory.decodeByteArray(currentAlbum.getPhotoList().get(position).imageByteArray, 0, currentAlbum.getPhotoList().get(position).imageByteArray.length);
+                imageView.setImageBitmap(image);
                 caption.setText(currentAlbum.getPhotoList().get(position).getCaption());
                 editText.setText(currentAlbum.getPhotoList().get(position).getCaption());
                 ta = new TagAdapter(SlideShowActivity.this, currentAlbum, position);
@@ -216,7 +218,9 @@ public class SlideShowActivity extends AppCompatActivity {
                 }else {
                     position = 0;
                 }
-                imageView.setImageBitmap(currentAlbum.getPhotoList().get(position).getImage());
+                imageView.setImageURI(Uri.fromFile(new File(currentAlbum.getPhotoList().get(position).getName())));
+                Bitmap image = BitmapFactory.decodeByteArray(currentAlbum.getPhotoList().get(position).imageByteArray, 0, currentAlbum.getPhotoList().get(position).imageByteArray.length);
+                imageView.setImageBitmap(image);
                 caption.setText(currentAlbum.getPhotoList().get(position).getCaption());
                 editText.setText(currentAlbum.getPhotoList().get(position).getCaption());
                 ta = new TagAdapter(SlideShowActivity.this, currentAlbum, position);
@@ -265,4 +269,21 @@ public class SlideShowActivity extends AppCompatActivity {
         //For adding data into recycler
 
     }
+
+    @Override
+    public void onBackPressed() {
+        //Toast.makeText(SlideShowActivity.this, "Back was pressed", Toast.LENGTH_SHORT).show();
+        super.onBackPressed();
+        Intent intent = new Intent(SlideShowActivity.this, MainActivity.class);
+        startActivity(intent);
+        if(currentAlbum.getName().equals("Searched Album")){
+            MainActivity.dataSource.deleteAlbum(currentAlbum);
+            MainActivity.dataSource.saveToDisk(context);
+        }
+
+//        Intent intent = new Intent(SlideShowActivity.this, PhotoViewActivity.class);
+//        startActivity(intent);
+
+    }
+
 }
