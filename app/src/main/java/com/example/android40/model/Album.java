@@ -15,7 +15,7 @@ import java.util.HashMap;
  * 
  *         This class is used to define the Album object
  */
-public class Album implements Serializable{
+public class Album implements Serializable, Parcelable{
 
 	private static final long serialVersionUID = -6624706288939535911L;
 
@@ -37,17 +37,17 @@ public class Album implements Serializable{
 		name = in.readString();
 	}
 
-//	public static final Creator<Album> CREATOR = new Creator<Album>() {
-//		@Override
-//		public Album createFromParcel(Parcel in) {
-//			return new Album(in);
-//		}
-//
-//		@Override
-//		public Album[] newArray(int size) {
-//			return new Album[size];
-//		}
-//	};
+	public static final Creator<Album> CREATOR = new Creator<Album>() {
+		@Override
+		public Album createFromParcel(Parcel in) {
+			return new Album(in);
+		}
+
+		@Override
+		public Album[] newArray(int size) {
+			return new Album[size];
+		}
+	};
 
 	/**
 	 * setter method to set name
@@ -103,14 +103,14 @@ public class Album implements Serializable{
 		return name + ", " + photos;
 	}
 
-//
-//	@Override
-//	public int describeContents() {
-//		return 0;
-//	}
-//
-//	@Override
-//	public void writeToParcel(Parcel dest, int flags) {
-//		dest.writeString(name);
-//	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(name);
+	}
 }
