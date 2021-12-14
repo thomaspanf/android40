@@ -3,6 +3,9 @@
 Android 10 api level 29
 If linting doesn't load in correctly in Android Studio, in top toolbar: File > Invalidate Caches / Restart... 
 
+[imgur link to .gif demonstration of app]{https://imgur.com/a/YKnltp4}
+
+
 ### Home screen Add/Delete and Edit album instructions: ###
 
 - to add album, click the '+' icon in the toolbar to prompt adding of album. Enter album name into text field and click 'add'. Empty or duplicate album names are not accepted.
@@ -22,3 +25,7 @@ If linting doesn't load in correctly in Android Studio, in top toolbar: File > I
 - to delete a photo, drag the photo to the left.
 - clicking on a photo in the gallery view will open the slideshow view. 
 - changing photo name, adding tags, and moving to another album can be done in the slideshow view. 
+
+### Delete photo or tag: ###
+- to delete a photo, click and drag photo to the left in the gallery view
+- to delete a tag, click and drag tag to the left in slideshow view 
