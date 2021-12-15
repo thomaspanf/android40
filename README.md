@@ -3,7 +3,7 @@
 Android 10 api level 29
 If linting doesn't load in correctly in Android Studio, in top toolbar: File > Invalidate Caches / Restart... 
 
-[imgur link to .gif demonstration of app](https://imgur.com/a/YKnltp4)
+[imgur link to .gif demonstration of app](https://imgur.com/a/cPF2OVQ)
 
 
 ### Home screen Add/Delete and Edit album instructions: ###
@@ -11,6 +11,7 @@ If linting doesn't load in correctly in Android Studio, in top toolbar: File > I
 - to add album, click the '+' icon in the toolbar to prompt adding of album. Enter album name into text field and click 'add'. Empty or duplicate album names are not accepted.
 - to delete an album, click and drag to the left to delete and album
 - to edit an album, click and drag to the right to enter edit page. Enter album name into text field and click 'edit'. Empty or duplicate album names are not accepted.
+- click refresh button to see any changes made
 
 ### Tag Search instructions: ###
 
