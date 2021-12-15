@@ -41,6 +41,12 @@ public class AddActivity extends AppCompatActivity {
                     return;
                 }
 
+                for(Album a : MainActivity.dataSource.getAlbumList()){
+                    if(a.getName().equals((editText.getText().toString()))) {
+                        Toast.makeText(AddActivity.this, "Album name already exists", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
 
                 Log.d(TAG, "Clicked add button");
                 startActivity(intent);

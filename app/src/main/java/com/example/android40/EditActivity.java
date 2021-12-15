@@ -81,6 +81,7 @@ public class EditActivity extends AppCompatActivity implements Serializable {
 //                currentAlbumText.setText(currentAlbum.getName());
 
                 Intent goBack = new Intent(EditActivity.this, MainActivity.class);
+                currentAlbumList.get(Integer.parseInt(position)).setName(editText.getText().toString());
                 goBack.putExtra(NEW_NAME, editText.getText().toString());
                 goBack.putExtra(ALBUM_POSITION, position);
                 goBack.putExtra(EDIT_ALBUM, (Parcelable) currentAlbum);

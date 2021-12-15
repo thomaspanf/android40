@@ -20,6 +20,7 @@ import com.example.android40.model.Tag;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -111,13 +112,13 @@ public class SearchActivity extends AppCompatActivity {
                 if(descriptionField.getText().toString().isEmpty()){
                     tag1 = new String[] { "", "" };
                 } else {
-                    tag1 = new String[] {spinner.getSelectedItem().toString(), descriptionField.getText().toString()};
+                    tag1 = new String[] {spinner.getSelectedItem().toString(), descriptionField.getText().toString().toLowerCase()};
                 }
 
                 if(descriptionField2.getText().toString().isEmpty()){
                     tag2 = new String[] { "", "" };
                 } else {
-                    tag2 = new String[] {spinner2.getSelectedItem().toString(), descriptionField2.getText().toString()};
+                    tag2 = new String[] {spinner2.getSelectedItem().toString(), descriptionField2.getText().toString().toLowerCase()};
                 }
 
                 String[] typeArr = new String[] { tag1[0], tag2[0] };
