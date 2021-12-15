@@ -175,6 +175,11 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sa.clear();
+//                for(Album a: MainActivity.dataSource.getAlbumList()) {
+//                    if(a.getName().equals("Searched Album")){
+//                        MainActivity.dataSource.getAlbumList().remove(a);
+//                    }
+//                }
             }
         });
 
@@ -204,6 +209,11 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //.makeText(SearchActivity.this, "Back was pressed", Toast.LENGTH_SHORT).show();
+        for(Album a: MainActivity.dataSource.getAlbumList()) {
+            if(a.getName().equals("Searched Album")){
+                MainActivity.dataSource.getAlbumList().remove(a);
+            }
+        }
         super.onBackPressed();
     }
 
